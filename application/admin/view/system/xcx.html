@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>{$title}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+
+    <!-- VENDOR CSS -->
+    <link rel="stylesheet" href="__ASSETS__/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__ASSETS__/vendor/sweetalert/sweetalert.css"><!-- 提示框 -->
+
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="__ASSETS__/css/site.css">
+</head>
+
+<body class="theme-blue">
+
+    <!-- Overlay For Sidebars -->
+    <div class="overlay"></div>
+
+    <div id="wrapper">
+
+        <div id="iframe-content">
+
+            <div class="container-fluid">
+                <div class="row clearfix">
+                    <div class="col-lg-12">
+                        <div class="body">
+                            <div class="card">
+                                <form id="form-post" class="body">
+                                    <ul class="nav nav-tabs3">
+                                        <li class="nav-item"><a class="nav-link active show" data-toggle="tab" href="#case">案例</a></li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div class="tab-pane show active" id="case">
+                                            <p>学习成果</p>
+                                            <textarea name="xxcg">{$xcx_config['xxcg']}</textarea>
+                                            <p class="mt-3">公司实力</p>
+                                            <textarea name="gssl">{$xcx_config['gssl']}</textarea>
+                                            <p class="mt-3">火热报名</p>
+                                            <textarea name="hrbm">{$xcx_config['hrbm']}</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4">
+                                        <button type="submit" class="btn btn-round btn-primary">保存</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Javascript -->
+    <script src="__ASSETS__/bundles/libscripts.bundle.js"></script><!-- jQuery Bootstrap -->
+    <script src="__ASSETS__/vendor/tinymce/tinymce.min.js"></script><!-- 编辑器 -->
+    <script src="__ASSETS__/vendor/tinymce/zh_CN.js"></script><!-- 编辑器 中文 -->
+    <script src="__ASSETS__/vendor/sweetalert/sweetalert.min.js"></script><!-- 提示框 -->
+    <script src="__ASSETS__/bundles/mainscripts.bundle.js"></script><!-- 通用 -->
+
+    <script>
+        tinymce.init({
+            selector: 'textarea',
+            language: 'zh_CN',
+            menubar: false,
+            branding: false,
+            height: 400,
+            plugins: 'print preview searchreplace autolink fullscreen image link media code codesample table charmap hr pagebreak nonbreaking anchor advlist lists textpattern help emoticons autosave',
+            toolbar: 'code undo redo restoredraft | cut copy | forecolor backcolor bold italic underline strikethrough link | alignleft aligncenter alignright alignjustify | bullist numlist blockquote subscript superscript removeformat | \
+                    formatselect fontselect fontsizeselect | \
+                    table image media charmap emoticons hr pagebreak print preview | fullscreen',
+            fixed_toolbar_container: '#doc-app .toolbar',
+            custom_ui_selector: 'body',
+            toolbar_mode: 'wrap',
+            autosave_ask_before_unload: false,
+            fontsize_formats: '12px 14px 16px 18px 24px 36px 48px 56px 72px',
+            font_formats: '微软雅黑=Microsoft YaHei,Helvetica Neue,PingFang SC,sans-serif;苹果苹方=PingFang SC,Microsoft YaHei,sans-serif;宋体=simsun,serif;仿宋体=FangSong,serif;黑体=SimHei,sans-serif;Arial=arial,helvetica,sans-serif;Arial Black=arial black,avant garde;Book Antiqua=book antiqua,palatino;Comic Sans MS=comic sans ms,sans-serif;Courier New=courier new,courier;Georgia=georgia,palatino;Helvetica=helvetica;Impact=impact,chicago;Symbol=symbol;Tahoma=tahoma,arial,helvetica,sans-serif;Terminal=terminal,monaco;Times New Roman=times new roman,times;Verdana=verdana,geneva;Webdings=webdings;Wingdings=wingdings,zapf dingbats;知乎配置=BlinkMacSystemFont, Helvetica Neue, PingFang SC, Microsoft YaHei, Source Han Sans SC, Noto Sans CJK SC, WenQuanYi Micro Hei, sans-serif;小米配置=Helvetica Neue,Helvetica,Arial,Microsoft Yahei,Hiragino Sans GB,Heiti SC,WenQuanYi Micro Hei,sans-serif',
+            images_upload_base_path: '/demo',
+            images_upload_handler: function (blobInfo, succFun, failFun) {
+                var formData = new FormData();
+                formData.append("file", blobInfo.blob());
+                $.ajax({
+                    url: "{tpurl url='admin/upload/upload'}",
+                    type: "POST",
+                    data: formData,
+                    async: true,
+                    processData: false,
+                    contentType: false,
+                    success: function (res) {
+                        if (res.code == 1) {
+                            succFun(res.data.file);
+                        } else {
+                            parent.swal({
+                                type: "error",
+                                title: res.msg
+                            });
+                        }
+                    }
+                })
+            }
+        });
+        $('#form-post').submit(function () {
+            tinymce.triggerSave();
+            $.ajax({
+                url: "{tpurl url='admin/system/xcx'}",
+                type: "POST",
+                data: $('#form-post').serialize(),
+                success: function (res) {
+                    if (res.code == 1) {
+                        parent.swal({
+                            type: "success",
+                            title: res.msg
+                        });
+                    } else {
+                        parent.swal({
+                            type: "error",
+                            title: res.msg
+                        });
+                    }
+                }
+            });
+            return false;
+        })
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,139 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>{$title}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+
+    <!-- VENDOR CSS -->
+    <link rel="stylesheet" href="__ASSETS__/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__ASSETS__/vendor/jquery-datatable/dataTables.bootstrap4.min.css"><!-- 表格 -->
+    <link rel="stylesheet" href="__ASSETS__/vendor/sweetalert/sweetalert.css"><!-- 提示框 -->
+
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="__ASSETS__/css/site.css">
+</head>
+
+<body class="theme-blue">
+
+    <!-- Overlay For Sidebars -->
+    <div class="overlay"></div>
+
+    <div id="wrapper">
+
+        <div id="iframe-content">
+
+            <div class="container-fluid">
+                <div class="row clearfix">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="header">
+                                <ul class="nav nav-tabs3">
+                                    <li class="nav-item"><a class="nav-link active" href="javascript:;">备份数据库</a></li>
+                                    <li class="nav-item"><a class="nav-link" href="{tpurl url='admin/database/import'/}">恢复数据库</a></li>
+                                </ul>
+                            </div>
+                            <form class="body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <a href="{tpurl url='admin/database/export'/}" type="button" onclick="" class="btn btn-default j-page-btns"><i class="icon-drawer align-middle mr-2"></i>备份数据库</a>
+                                        <a href="{tpurl url='admin/database/optimize'/}" type="button" class="btn btn-default j-page-btns"><i class="icon-rocket align-middle mr-2"></i>优化数据库</a>
+                                        <a href="{tpurl url='admin/database/repair'/}" type="button" class="btn btn-default j-page-btns"><i class="icon-wrench align-middle mr-2"></i>修复数据库</a>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table id="myDatatable" class="table table-hover dataTable table-custom spacing5">
+                                        <thead>
+                                            <tr>
+                                                <th width="35">
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" class="custom-control-input" id="checkAll">
+                                                        <label class="custom-control-label" for="checkAll"></label>
+                                                    </div>
+                                                </th>
+                                                <th>表名</th>
+                                                <th>数据量</th>
+                                                <th>大小</th>
+                                                <th>冗余</th>
+                                                <th>备注</th>
+                                                <th>操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {volist name="list" id="vo"}
+                                            <tr>
+                                                <td>
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" name="ids[]" class="custom-control-input" id="id-{$vo['Name']}" value="{$vo['Name']}">
+                                                        <label class="custom-control-label" for="id-{$vo['Name']}"></label>
+                                                    </div>
+                                                </td>
+                                                <td>{$vo['Name']}</td>
+                                                <td>{$vo['Rows']}</td>
+                                                <td>{$vo['Data_length']/1024|round=###,2} kb</td>
+                                                <td>{$vo['Data_free']/1024|round=###,2} kb</td>
+                                                <td>{$vo['Comment']}</td>
+                                                <td>
+                                                    <a href="{tpurl url='admin/database/optimize'/}&ids={$vo['Name']}" class="btn btn-sm btn-default j-ajax">优化</a>
+                                                    <a href="{tpurl url='admin/database/repair'/}&ids={$vo['Name']}" class="btn btn-sm btn-default j-ajax">修复</a>
+                                                </td>
+                                            </tr>
+                                            {/volist}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Javascript -->
+    <script src="__ASSETS__/bundles/libscripts.bundle.js"></script><!-- jQuery Bootstrap -->
+
+    <script src="__ASSETS__/bundles/datatablescripts.bundle.js"></script><!-- 表格 -->
+    <script src="__ASSETS__/vendor/sweetalert/sweetalert.min.js"></script><!-- 提示框 -->
+
+    <script src="__ASSETS__/bundles/mainscripts.bundle.js"></script><!-- 通用 -->
+
+    <script>
+        $('#myDatatable').DataTable({
+            "bInfo": false,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bSort": false,
+            "paging": false
+        });
+        $("#checkAll").prop("checked", false).unbind('click').on("click", function () {
+            if (this.checked) {
+                $("input[name='ids[]']").each(function () {
+                    this.checked = true;
+                });
+            } else {
+                $("input[name='ids[]']").each(function () {
+                    this.checked = false;
+                });
+            }
+        });
+        $("input[name='ids[]").unbind('click').on("click", function () {
+            if ($(this).is(":checked") == false) {
+                $("#checkAll").prop("checked", false);
+            } else {
+                $("#checkAll").prop("checked", true);
+                $("input[name='ids[]']").each(function () {
+                    if (this.checked == false) {
+                        $("#checkAll").prop("checked", false);
+                        return;
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+
+</html>

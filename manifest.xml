@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns="http://www.we7.cc" versionCode="">
+    <application setting="false">
+        <name><![CDATA[获客视频]]></name>
+        <identifie><![CDATA[huoke_video]]></identifie>
+        <version><![CDATA[1.0.0]]></version>
+        <type><![CDATA[business]]></type>
+        <ability><![CDATA[获客视频]]></ability>
+        <description><![CDATA[获客视频]]></description>
+        <author><![CDATA[佳人科技]]></author>
+        <url><![CDATA[]]></url>
+    </application>
+    <platform>
+        <supports>
+            <item type="wxapp"/>
+        </supports>
+    </platform>
+    <bindings>
+        <page>
+            <!-- <entry title="主页" do="/pages/index/index" state="" direct=""/> -->
+        </page>
+    </bindings>
+    <permissions>
+    </permissions>
+    <install><![CDATA[install.php]]></install>
+    <uninstall><![CDATA[]]></uninstall>
+    <upgrade><![CDATA[]]></upgrade>
+</manifest>

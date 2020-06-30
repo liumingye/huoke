@@ -1,0 +1,272 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>{$title}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+
+    <!-- VENDOR CSS -->
+    <link rel="stylesheet" href="__ASSETS__/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__ASSETS__/vendor/sweetalert/sweetalert.css"><!-- 提示框 -->
+    <link rel="stylesheet" href="__ASSETS__/vendor/selectivity/selectivity-jquery.css"><!-- 下拉搜索 -->
+
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="__ASSETS__/css/site.css">
+
+</head>
+
+<body class="theme-blue">
+
+    <!-- Overlay For Sidebars -->
+    <div class="overlay"></div>
+
+    <div id="wrapper">
+
+        <div id="iframe-content">
+
+            <div class="container-fluid">
+                <div class="row clearfix">
+                    <div class="col-lg-12">
+                        <form id="form-post" class="row clearfix">
+                            <input type="text" name="id" value="{$info['id']}" hidden>
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="header">
+                                        <h1>基本参数</h1>
+                                    </div>
+                                    <div class="body">
+                                        <div class="row clearfix">
+                                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label for="msg" class="control-label"><span class="text-danger mr-1">*</span>发布用户ID</label>
+                                                    <div id="input-uid" class="selectivity-input"></div>
+                                                    <input type="text" name="uid" class="form-control" value="{$info['user']['id']}" hidden>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label for="msg" class="control-label"><span class="text-danger mr-1">*</span>描述</label>
+                                                    <input type="text" name="msg" class="form-control" value="{$info['msg']}">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label for="views" class="control-label">审核状态</label>
+                                                    <select name="status" class="custom-select">
+                                                        <option value="1" {eq name="$info['status']" value="1" } selected{/eq}>已通过</option>
+                                                        <option value="2" {eq name="$info['status']" value="2" } selected{/eq}>未通过</option>
+                                                        <option value="0" {eq name="$info['status']" value="0" } selected{/eq}>未审核</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label for="views" class="control-label">播放量</label>
+                                                    <label class="ml-2 btn btn-default" onclick="random_views(999)">随机百</label>
+                                                    <label class="ml-1 btn btn-default" onclick="random_views(1000,9999)">随机千</label>
+                                                    <label class="ml-1 btn btn-default" onclick="random_views(10000,99999)">随机万</label>
+                                                    <input type="text" name="views" class="form-control" value="{$info['views']}">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4 col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label for="views" class="control-label"><span class="text-danger mr-1">*</span>创建时间</label>
+                                                    <label class="ml-2 btn btn-default" onclick="cur_time()">当前时间</label>
+                                                    <input type="text" name="create_time" class="form-control" value="{if $info['create_time']}{$info['create_time']}{else /}{php}echo date('Y-m-d H:i:s'){/php}{/if}">
+                                                    <span class="help-block">xxxx-xx-xx xx:xx:xx</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="header">
+                                        <h1>视频参数</h1>
+                                    </div>
+                                    <div class="body">
+                                        <div class="row clearfix">
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="src" class="control-label"><span class="text-danger mr-1">*</span>视频链接</label>
+                                                    <label class="ml-2 btn btn-default" for="video-file-input">上传</label>
+                                                    <textarea class="form-control" name="src" rows="2" cols="30">{$info['src']}</textarea>
+                                                </div>
+                                                <input type="file" id="video-file-input" name="url" hidden data-input='textarea[name="src"]'>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="cover" class="control-label">预览图</label>
+                                                    <label class="ml-2 btn btn-default" for="cover-file-input">上传</label>
+                                                    <textarea class="form-control" name="cover" rows="2" cols="30">{$info['cover']}</textarea>
+                                                </div>
+                                                <input type="file" id="cover-file-input" name="url" hidden data-input='textarea[name="cover"]'>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <button type="submit" class="btn btn-round btn-primary">保存</button>
+                                    <button type="button" class="btn btn-round btn-danger" onclick="cancel()">取消</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Javascript -->
+    <script src="__ASSETS__/bundles/libscripts.bundle.js"></script><!-- jQuery Bootstrap -->
+    <script src="__ASSETS__/vendor/sweetalert/sweetalert.min.js"></script><!-- 提示框 -->
+    <script src="__ASSETS__/vendor/selectivity/selectivity-jquery.js"></script><!-- 下拉搜索 -->
+    <script src="__ASSETS__/vendor/jquery-inputmask/jquery.inputmask.bundle.js"></script><!-- 输入格式化 -->
+    <script src="__ASSETS__/bundles/mainscripts.bundle.js"></script><!-- 通用 -->
+    <script>
+        // 发布用户选择
+        $('#input-uid').selectivity({
+            ajax: {
+                url: '{tpurl url="admin/user/data"}',
+                quietMillis: 250,
+                fetch: function (url, init, queryOptions) {
+                    console.log(queryOptions);
+                    return $.post({
+                        url: url,
+                        data: {
+                            'search[0][name]': 'nickname',
+                            'search[0][value]': queryOptions.term,
+                        }
+                    }).then(function (data) {
+                        return {
+                            results: $.map(data.data, function (item) {
+                                return {
+                                    id: item.id,
+                                    text: item.nickname,
+                                    headimg: item.headimg
+                                };
+                            }),
+                            more: (data.recordsTotal < queryOptions.offset)
+                        };
+                    });
+                }
+            },
+            placeholder: "{$info['user']['nickname']}",
+            templates: {
+                resultItem: function (item) {
+                    return ('<div class="selectivity-result-item" data-item-id="' + item.id + '">' +
+                        '<img class="mr-3" src=' + item.headimg + ' width="50" height="50">' +
+                        '<b>' + item.text + '</b>' +
+                        '</div>');
+                }
+            }
+        }).on('change', function (e) {
+            $('input[name="uid"]').val($(this).selectivity('val'));
+        });
+        // 输入框限制
+        $('input[name="create_time"]').inputmask('y-m-d h:s:s', { placeholder: '____-__-__ __:__:__', alias: "datetime", hourFormat: '24' });
+        // 关闭标签页
+        function cancel() {
+            self != top ? parent.tab.close_this() : window.close();
+        }
+        // 当前时间
+        function cur_time() {
+            $('input[name="create_time"]').val(DateToTime());
+        }
+        // 随机播放量
+        function random_views(minNum, maxNum) {
+            var num = 0;
+            switch (arguments.length) {
+                case 1:
+                    num = parseInt(Math.random() * minNum + 1, 10);
+                    break;
+                case 2:
+                    num = parseInt(Math.random() * (maxNum - minNum + 1) + minNum, 10);
+                    break;
+            }
+            $('input[name="views"]').val(num);
+        }
+        $('input[type="file"]').on("propertychange change", function () {
+            var that = $(this);
+            var file = that[0].files[0];
+            if (!file) {
+                return false;
+            }
+            // 禁止上传按钮
+            that.attr('disabled', true);
+            var btn = $('[for="' + that.attr('id') + '"]');
+            var text = btn.text();
+            btn.text('上传中...').addClass('disabled');
+            // 构建表单 开始上传
+            var formData = new FormData();
+            formData.append("file", file);
+            $.ajax({
+                url: "{tpurl url='admin/upload/upload'}",
+                type: "POST",
+                data: formData,
+                async: true,
+                processData: false,
+                contentType: false,
+                xhr: function () {
+                    var xhr = $.ajaxSettings.xhr();
+                    if (xhr.upload) {
+                        xhr.upload.addEventListener("progress", function (e) {
+                            btn.text('上传中(' + Math.floor(100 * e.loaded / e.total) + '%)...');
+                        }, false);
+                    }
+                    return xhr;
+                },
+                success: function (res) {
+                    if (res.code == 1) {
+                        parent.swal({
+                            type: "success",
+                            title: res.msg
+                        });
+                        $(that.data('input')).val(res.data.file);
+                    } else {
+                        parent.swal({
+                            type: "error",
+                            title: res.msg,
+                            confirmButtonText: "确认"
+                        });
+                    }
+                },
+                complete: function () {
+                    that.val('');
+                    btn.text(text).removeClass('disabled');
+                    that.attr('disabled', false);
+                }
+            })
+        });
+        $('#form-post').submit(function () {
+            $.ajax({
+                url: "{tpurl url='admin/video/info'}",
+                type: "POST",
+                data: $('#form-post').serialize(),
+                success: function (data) {
+                    if (data.code == 1) {
+                        parent.swal({
+                            type: "success",
+                            title: data.msg,
+                            cancelButtonText: "关闭选项卡",
+                            showConfirmButton: true,
+                            showCancelButton: self != top ? true : false,
+                        }, function (e) {
+                            !e && parent.tab.close_this();
+                        });
+                    } else {
+                        parent.swal({
+                            type: "error",
+                            title: data.msg,
+                            confirmButtonText: "确认"
+                        });
+                    }
+                }
+            });
+            return false;
+        })
+    </script>
+</body>
+
+</html>

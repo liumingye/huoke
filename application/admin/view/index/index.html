@@ -1,0 +1,308 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>{$title}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+
+    <!-- VENDOR CSS -->
+    <link rel="stylesheet" href="__ASSETS__/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__ASSETS__/vendor/animate-css/vivify.min.css">
+    <link rel="stylesheet" href="__ASSETS__/vendor/sweetalert/sweetalert.css"><!-- 提示框 -->
+
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="__ASSETS__/css/site.css">
+    <style>
+        #navTabRow {
+            border: none;
+            user-select: none;
+        }
+
+        #navTabRow>.nav-item {
+            background: inherit;
+            margin-bottom: 0;
+            z-index: 1;
+        }
+
+        #navTabRow .dropdown .nav-link {
+            border: 1px solid transparent !important;
+            border-radius: 0;
+        }
+
+        #navTab {
+            flex: 1;
+            flex-wrap: nowrap;
+            overflow: hidden;
+            border: none;
+        }
+
+        #navTab>.nav-item {
+            flex-shrink: 0;
+        }
+
+        #navTab .la-times {
+            position: relative;
+            transition: .3s;
+            margin-left: 5px;
+            margin-right: -2px;
+            padding: 2px;
+            border-radius: 4px;
+        }
+
+        #navTab .la-times:hover {
+            background-color: #FF5722;
+            color: #fff;
+        }
+
+        #navTabContent.tab-content {
+            margin-top: 0;
+        }
+
+        .sortable-ghost {
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body class="theme-blue">
+
+    <!-- Overlay For Sidebars -->
+    <div class="overlay"></div>
+
+    <div id="wrapper">
+
+        <nav class="navbar navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-left">
+                    <div class="navbar-btn">
+                        <a href="{tpurl url='admin/index/index'}"><img src="__ASSETS__/images/icon.svg" alt="Logo" class="img-fluid logo"></a>
+                        <button type="button" class="btn-toggle-offcanvas"><i class="lnr lnr-menu la la-bars"></i></button>
+                    </div>
+                    <form id="navbar-search" class="navbar-form search-form">
+                        <input value="" class="form-control" placeholder="Search here..." type="text">
+                        <button type="button" class="btn btn-default"><i class="icon-magnifier"></i></button>
+                    </form>
+                </div>
+                <div class="navbar-right">
+                    <div id="navbar-menu">
+                        <ul class="nav navbar-nav">
+                            <li><a href="javascript:void(0);" class="menu">清理缓存</a></li>
+                            <li class="user-account">
+                                <div class="user_div">
+                                    <img src="{$adminUser['avatar']}" class="user-photo" alt="User Profile Picture" onerror="this.src='../web/resource/images/nopic-user.png';return false;">
+                                </div>
+                                <div class="dropdown">
+                                    <span>欢迎你,</span>
+                                    <a href="javascript:void(0);" class="dropdown-toggle user-name" data-toggle="dropdown"><strong>{$adminUser['name']}</strong></a>
+                                    <ul class="dropdown-menu dropdown-menu-right account vivify flipInY">
+                                        <li><a href="../web/index.php?c=user&a=profile" target="_blank"><i class="icon-user"></i>我的账号</a></li>
+                                        <li class="divider"></li>
+                                        <li><a href="../web/index.php?c=home&a=welcome&do=system&page=home"><i class="icon-power"></i>退出</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div id="left-sidebar" class="sidebar">
+            <div class="navbar-brand">
+                <a href="{tpurl url='admin/index/index'}"><img src="__ASSETS__/images/icon.svg" alt="Logo" class="img-fluid logo"><span>获客视频</span></a>
+                <button type="button" class="btn-toggle-offcanvas btn btn-sm float-right"><i class="lnr lnr-menu la la-chevron-circle-left"></i></button>
+            </div>
+            <div class="sidebar-scroll">
+                <nav id="left-sidebar-nav" class="sidebar-nav">
+                    <!-- <div class="px-3 mt-3">
+                        <button class="btn btn-sm btn-block btn-primary btn-round" title=""><i class="las la-plus-circle mr-1"></i>发布视频</button>
+                    </div> -->
+                    <ul id="main-menu" class="metismenu">
+                        {assign name="i" value="0" /}
+                        {foreach $sidebar_nav as $vo}
+                        {if $vo['type'] == 'header'}
+                        <li class="header">{$vo['name']}</li>
+                        {/if}
+                        {if $vo['type'] == 'a'}
+                        <li><a data-id="{$i}" class="nav-item" href="{$vo['url']}"><i class="{$vo['icon']}"></i><span>{$vo['name']}</span></a></li>
+                        {php}$i++;{/php}
+                        {/if}
+                        {if $vo['type'] == 'nav'}
+                        <li>
+                            <a href="#" class="has-arrow"><i class="{$vo['icon']}"></i><span>{$vo['name']}</span></a>
+                            <ul>
+                                {foreach $vo['data'] as $vo}
+                                <li><a data-id="{$i}" class="nav-item" href="{$vo['url']}">{$vo['name']}</a></li>
+                                {php}$i++;{/php}
+                                {/foreach}
+                            </ul>
+                        </li>
+                        {/if}
+                        {/foreach}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <div class="body-tabs">
+            <ul class="nav nav-tabs" id="navTabRow" role="tablist">
+                <li class="nav-item"><a href="javascript:;" class="nav-link" onclick="tab.reload();this.blur();"><i class="la la-redo-alt"></i></a></li>
+                <li class="nav-item"><a href="javascript:;" class="nav-link" onclick="tab.left();this.blur();"><i class="la la-angle-left"></i></a></li>
+                <ul class="nav nav-tabs" id="navTab" role="tablist"></ul>
+                <li class="nav-item"><a href="javascript:;" class="nav-link" onclick="tab.right();this.blur();"><i class="la la-angle-right"></i></a></li>
+                <li class="nav-item dropdown">
+                    <a href="javascript:;" class="nav-link" onclick="this.blur();" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="la la-sort-down"></i></a>
+                    <div class="dropdown-menu dropdown-menu-right mx-1 my-1">
+                        <a class="dropdown-item" href="javascript:;" onclick="tab.close_other()">关闭其他标签页</a>
+                        <a class="dropdown-item" href="javascript:;" onclick="tab.close_left()">关闭左侧标签页</a>
+                        <a class="dropdown-item" href="javascript:;" onclick="tab.close_right()">关闭右侧标签页</a>
+                    </div>
+                </li>
+            </ul>
+            <div class="tab-content" id="navTabContent"></div>
+        </div>
+    </div>
+    <!-- Javascript -->
+    <script src="__ASSETS__/bundles/libscripts.bundle.js"></script><!-- jQuery Bootstrap -->
+    <script src="__ASSETS__/vendor/metismenu/metismenu.min.js"></script><!-- 提示框 -->
+    <script src="__ASSETS__/vendor/sweetalert/sweetalert.min.js"></script><!-- 提示框 -->
+    <script src="__ASSETS__/vendor/sortable/sortable.min.js"></script><!-- Sortable -->
+    <script src="__ASSETS__/bundles/mainscripts.bundle.js"></script><!-- 通用 -->
+    <script>
+        $("#main-menu").metisMenu();
+
+        var tabFn = function () {
+            this.$navTab = $('#navTab');
+            this.$navTabContent = $('#navTabContent');
+            this.init();
+        };
+        tabFn.prototype = {
+            init: function () {
+                var that = this;
+                // 位置拖拽
+                new Sortable(this.$navTab[0], {
+                    ghostClass: "sortable-ghost",
+                    animation: 150,
+                    direction: "horizontal",
+                    invertSwap: true,
+                    invertedSwapThreshold: 0.4
+                });
+                // 中键滚动
+                this.$navTab.on('mousewheel', function (e) {
+                    var delta = e.originalEvent.wheelDelta,
+                        scrollLeft = that.$navTab.scrollLeft();
+                    if (delta > 0) {
+                        that.$navTab.scrollLeft(scrollLeft - 100);
+                    } else if (delta < 0) {
+                        that.$navTab.scrollLeft(scrollLeft + 100);
+                    }
+                });
+            },
+            add: function (title, url, id) {
+                var that = this;
+                if ($('.x-iframe').length == 10) {
+                    sweetAlert("最多可打开10个标签页");
+                    return false;
+                }
+                if ($('#tab-' + id).length) {
+                    this.change(id);
+                    return false;
+                }
+                this.$navTab.append('<li class="nav-item" role="presentation"><a class="nav-link" id="tab-' + id + '" data-toggle="tab" href="#content-' + id + '" role="tab" aria-controls="home" aria-selected="true">' + title + '<i class="la la-times" onclick="tab.close(\'' + id + '\')"></i></a></li>');
+                this.$navTabContent.append('<div class="tab-pane" id="content-' + id + '" role="tabpanel" aria-labelledby="tab-' + id + '"><iframe data-id="' + id + '" frameborder="0" src="' + url + '" class="x-iframe"></iframe></div>');
+                // 中键关闭TAB
+                $('#tab-' + id).mousedown(function (e) {
+                    if (e.which == 2) {
+                        tab.close(that.get_id(this));
+                        return false;
+                    }
+                });
+            },
+            change: function (id) {
+                $('#tab-' + id).click();
+                this.$navTab.scrollLeft($('#tab-' + id).offset().left + this.$navTab.scrollLeft() - this.$navTab.width() / 2);
+            },
+            close: function (id) {
+                var curTab = $('#tab-' + id),
+                    nextTab = null;
+                // 自动选择下一个TAB
+                if (curTab.hasClass('active')) {
+                    if (curTab.parent().next().length) {
+                        nextTab = curTab.parent().next().find('.nav-link');
+                    } else if (curTab.parent().prev().length) {
+                        nextTab = curTab.parent().prev().find('.nav-link');
+                    }
+                }
+                curTab.parent('li').remove();
+                $('#content-' + id).remove();
+                $('#left-sidebar-nav .nav-item[data-id="' + id + '"]').parent('li').removeClass('active');
+                // 删除后再切换，不然会有BUG
+                nextTab && nextTab.click();
+                return false;
+            },
+            close_this: function () {
+                this.close(this.get_id(this.$navTab.find('.nav-link.active')));
+            },
+            close_other: function () {
+                var that = this;
+                var closeTab = this.$navTab.find('.nav-link').not('.active');
+                $.each(closeTab, function () {
+                    that.close(that.get_id(this));
+                });
+            },
+            close_left: function () {
+                var that = this;
+                var closeTab = this.$navTab.find('.nav-link.active').parent().prevAll().find('.nav-link');
+                $.each(closeTab, function () {
+                    that.close(that.get_id(this));
+                });
+            },
+            close_right: function () {
+                var that = this;
+                var closeTab = this.$navTab.find('.nav-link.active').parent().nextAll().find('.nav-link');
+                $.each(closeTab, function () {
+                    that.close(that.get_id(this));
+                });
+            },
+            reload: function () {
+                var iframe = this.$navTabContent.find('.active').find('iframe')[0];
+                iframe && iframe.contentWindow.location.reload(true);
+            },
+            left: function () {
+                var tab = this.$navTab.find('.nav-link.active').parent().prev().find('.nav-link');
+                if (tab.length) {
+                    this.change(this.get_id(tab));
+                }
+            },
+            right: function () {
+                var tab = this.$navTab.find('.nav-link.active').parent().next().find('.nav-link');
+                if (tab.length) {
+                    this.change(this.get_id(tab));
+                }
+            },
+            get_id: function (dom) {
+                return $(dom).attr('id').replace(/^tab-/, '');
+            }
+        };
+        var tab = new tabFn();
+
+        $('#left-sidebar-nav .nav-item').click(function (e) {
+            e.stopPropagation();
+
+            var that = $(this);
+            var id = that.attr('data-id');
+
+            that.parent('li').addClass('active');
+            tab.add(that.text(), that.attr('href'), id);
+            tab.change(id);
+
+            return false;
+        });
+
+        $('#left-sidebar-nav .nav-item').eq(0).click();
+
+    </script>
+</body>
+
+</html>

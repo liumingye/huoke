@@ -1,0 +1,358 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>{$title}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+
+    <!-- VENDOR CSS -->
+    <link rel="stylesheet" href="__ASSETS__/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__ASSETS__/vendor/jquery-datatable/dataTables.bootstrap4.min.css"><!-- 表格 -->
+    <link rel="stylesheet" href="__ASSETS__/vendor/sweetalert/sweetalert.css"><!-- 提示框 -->
+    <link rel="stylesheet" href="__ASSETS__/vendor/bootstrap-multiselect/bootstrap-multiselect.css"><!-- 多选框 -->
+    <link rel="stylesheet" href="__ASSETS__/vendor/daterangepicker/daterangepicker.min.css"><!-- 日期选择 -->
+
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" href="__ASSETS__/css/site.css">
+</head>
+
+<body class="theme-blue">
+
+    <!-- Overlay For Sidebars -->
+    <div class="overlay"></div>
+
+    <div id="wrapper">
+
+        <div id="iframe-content">
+
+            <div class="container-fluid">
+                <div class="row clearfix">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="header">
+                                <form id="search-form" class="row">
+                                    <div class="col-lg-2 col-md-6">
+                                        <label>状态</label>
+                                        <div class="multiselect_div">
+                                            <select name="status" class="multiselect multiselect-custom" multiple="multiple">
+                                                <option value="0">未审核</option>
+                                                <option value="1">已通过</option>
+                                                <option value="2">未通过</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-2 col-md-6 ">
+                                        <label>创建时间</label>
+                                        <input type="text" name="create_time" class="form-control">
+                                    </div>
+                                    <div class="col-lg-2 col-md-6">
+                                        <label>视频描述</label>
+                                        <input type="text" name="msg" class="form-control">
+                                    </div>
+                                    <div class="col-lg-2 col-md-6">
+                                        <label>搜索</label>
+                                        <a onclick="table.search()" class="btn btn-default btn-block"><i class="la la-search"></i></a>
+                                    </div>
+                                </form>
+                                <ul class="header-dropdown dropdown">
+                                    <li class="dropdown">
+                                        <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="javascript:void(0);">测试按钮</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <form class="body">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <a onclick="video.add()" class="btn btn-default"><i class="icon-plus align-middle mr-2"></i>添加</a>
+                                        <a href="{tpurl url='admin/video/del'}" type="button" class="btn btn-default j-page-btns confirm" data-title="确认删除?"><i class="icon-trash align-middle mr-2"></i>删除</a>
+                                        <a onclick="" class="btn btn-default"><i class="icon-eye align-middle mr-2"></i>状态</a>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table id="myDatatable" class="table table-hover dataTable table-custom spacing5">
+                                        <thead>
+                                            <tr>
+                                                <th width="35">
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input type="checkbox" class="custom-control-input" id="checkAll">
+                                                        <label class="custom-control-label" for="checkAll"></label>
+                                                    </div>
+                                                </th>
+                                                <th>编号</th>
+                                                <th>发布用户</th>
+                                                <th>预览图</th>
+                                                <th>视频描述</th>
+                                                <th>播放量</th>
+                                                <th>创建时间</th>
+                                                <th>状态</th>
+                                                <th>操作</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 预览视频 -->
+        <div class="modal fade" id="preview" tabindex="-1" role="dialog" aria-labelledby="previewTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="previewTitle">预览视频</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="dplayer"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-round btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Javascript -->
+    <script src="__ASSETS__/bundles/libscripts.bundle.js"></script><!-- jQuery Bootstrap -->
+
+    <script src="__ASSETS__/bundles/datatablescripts.bundle.js"></script><!-- 表格 -->
+
+    <script src="__ASSETS__/vendor/sweetalert/sweetalert.min.js"></script><!-- 提示框 -->
+
+    <script src="__ASSETS__/vendor/bootstrap-multiselect/bootstrap-multiselect.js"></script><!-- 多选框 -->
+
+    <script src="__ASSETS__/vendor/moment/moment.min.js"></script><!-- 日期处理类库 -->
+    <script src="__ASSETS__/vendor/daterangepicker/daterangepicker.min.js"></script><!-- 日期选择 -->
+
+    <script src="__ASSETS__/bundles/mainscripts.bundle.js"></script><!-- 通用 -->
+
+    <script src="__ASSETS__/vendor/dplayer/DPlayer.min.js"></script><!-- 播放器 -->
+    <script src="__ASSETS__/vendor/hls/hls.min.js"></script><!-- HLS -->
+
+    <script>
+        var listData = [],
+            dp = null;
+        // 视频操作
+        var video = {
+            add: function () {
+                var id = parseInt(Math.random() * 1000);
+                try {
+                    parent.tab.add("添加视频", "{tpurl url='admin/video/info'}", "video_add_" + id);
+                    parent.tab.change("video_add_" + id);
+                } catch (e) {
+                    openUrl("{tpurl url='admin/video/info'}");
+                }
+            },
+            preview: function (src) {
+                var obj = $('#preview');
+                dp = new DPlayer({
+                    container: document.getElementById('dplayer'),
+                    autoplay: true,
+                    video: {
+                        url: src,
+                    }
+                });
+                obj.modal("show");
+            },
+            edit: function (id) {
+                try {
+                    parent.tab.add("编辑视频" + id, "{tpurl url='admin/video/info'}" + "&id=" + id, "video_edit_" + id);
+                    parent.tab.change("video_edit_" + id);
+                } catch (e) {
+                    openUrl("{tpurl url='admin/video/info'}" + "&id=" + id);
+                }
+            },
+            del: function (id) {
+                parent.swal({
+                    title: "确认删除",
+                    text: "确认删除此视频？",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#dc3545",
+                    confirmButtonText: "确认",
+                    cancelButtonText: "取消",
+                }, function () {
+                    location.href = "{tpurl url='admin/video/del'}" + "&ids=" + id;
+                });
+            },
+            del_selected: function () {
+                var arr = $('#myDatatable').DataTable().rows({ selected: true }).data().toArray();
+                var arr2 = [];
+                $.each(arr, function (key, val) {
+                    arr2.push(val.id);
+                });
+                var ids = arr2.join(',');
+                this.del(ids);
+            }
+        };
+        var table = {
+            search: function () {
+                $('#myDatatable').DataTable().draw();
+            },
+            select: function () {
+                $('#myDatatable').DataTable().rows().select();
+            },
+            deselect: function () {
+                $('#myDatatable').DataTable().rows().deselect();
+            }
+        };
+        $('#preview').on('hidden.bs.modal', function (e) {
+            dp.destroy();
+        });
+        // 选择框样式
+        $(function () {
+            $('.multiselect').multiselect({
+                'nonSelectedText': '全部',
+                'allSelectedText': '全部选择',
+            });
+        });
+        // 日期选择
+        $('input[name="create_time"]').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                format: "YYYY/MM/DD",
+                applyLabel: '确定',
+                cancelLabel: '清空',
+                daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+                monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                firstDay: 1
+            }
+        }).on('apply.daterangepicker', function (e, picker) {
+            $(this).val(picker.startDate.format('YYYY/MM/DD') + ' - ' + picker.endDate.format('YYYY/MM/DD'));
+        }).on('cancel.daterangepicker', function () {
+            $(this).val('');
+        });
+        // 表格数据
+        $('#myDatatable').DataTable({
+            stateSave: true,//页数状态持久 2小时
+            processing: true,//数据加载时显示进度条
+            serverSide: true,//启用服务端分页（这是使用Ajax服务端的必须配置）
+            searching: false,//是否启用搜索功能
+            processing: true,//表示翻页时是否显示 processing信息（正在加载中），这个信息可以修改
+            ajax: { //ajax请求后台
+                url: "{tpurl url='admin/video/data'/}",
+                type: "POST",
+                data: function (data) {
+                    data.search = $("#search-form").serializeArray();
+                },
+                complete: function (res) {
+                    listData = res.responseJSON.data;
+                    $('#myDatatable').css('width', $('#myDatatable').parent().width()); // 自动调宽
+                    $("#checkAll").prop("checked", false).unbind('click').on("click", function () {
+                        if (this.checked) {
+                            $("input[name='ids[]']").each(function () {
+                                this.checked = true;
+                            });
+                        } else {
+                            $("input[name='ids[]']").each(function () {
+                                this.checked = false;
+                            });
+                        }
+                    });
+                    $("input[name='ids[]").unbind('click').on("click", function () {
+                        if ($(this).is(":checked") == false) {
+                            $("#checkAll").prop("checked", false);
+                        } else {
+                            $("#checkAll").prop("checked", true);
+                            $("input[name='ids[]']").each(function () {
+                                if (this.checked == false) {
+                                    $("#checkAll").prop("checked", false);
+                                    return;
+                                }
+                            });
+                        }
+                    });
+                }
+            },
+            columns: [
+                {
+                    bSortable: false, //不排序
+                    data: "id",
+                    render: function (data) {
+                        return '<div class="custom-control custom-checkbox"><input type="checkbox" name="ids[]" class="custom-control-input" id="id-' + data + '" value="' + data + '"><label class="custom-control-label" for="id-' + data + '"></label></div>';
+                    }
+                },
+                { data: "id" },
+                {
+                    bSortable: false, //不排序
+                    data: "nickname"
+                },
+                {
+                    bSortable: false, //不排序
+                    data: "cover",
+                    render: function (data) {
+                        return '<a href="' + data + '" target="_blank"><img style="max-height:100px;max-width:100px;height:auto;width:auto;" src="' + data + '" /></a>';
+                    }
+                },
+                { data: "msg" },
+                { data: "views" },
+                { data: "create_time" },
+                {
+                    data: "status",
+                    render: function (data) {
+                        var content = "";
+                        if (data == 0) {
+                            content += '<span class="badge badge-warning">未审核</span>';
+                        } else if (data == 1) {
+                            content += '<span class="badge badge-success">已通过</span>';
+                        } else if (data == 2) {
+                            content += '<span class="badge badge-danger">未通过</span>';
+                        }
+                        return content;
+                    }
+                },
+                {
+                    width: 150,
+                    bSortable: false, //不排序
+                    render: function (data, type, full, meta) {
+                        var content = '<div class="button-group">';
+                        content += '<button type="button" class="btn btn-sm btn-default mr-2" onclick="video.preview(\'' + full.src + '\')"><i class="icon-control-play"></i></button>';
+                        content += '<button type="button" class="btn btn-sm btn-default mr-2" onclick="video.edit(\'' + full.id + '\')"><i class="icon-note"></i></button>';
+                        content += '<a href="{tpurl url="admin/video/del"}&ids=' + full.id + '" type="button" class="btn btn-sm btn-danger j-ajax confirm refresh" data-title="确认删除?"><i class="icon-trash"></i></a>';
+                        content += '</div>';
+                        return content;
+                    }
+                },
+            ],
+            order: [[6, 'desc']],  //默认按时间列升序排序
+            bSort: true, //是否可排序
+            oLanguage: {  //将英文信息转换未中文
+                sProcessing: "处理中...",
+                sLengthMenu: "每页显示 _MENU_ 项结果",
+                sZeroRecords: "没有匹配结果",
+                sInfo: "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                sInfoEmpty: "显示第 0 至 0 项结果，共 0 项",
+                sInfoFiltered: "(由 _MAX_ 项结果过滤)",
+                sInfoPostFix: "",
+                sSearch: "搜索:",
+                sUrl: "",
+                sEmptyTable: "表中数据为空",
+                sLoadingRecords: "载入中...",
+                sInfoThousands: ",",
+                oPaginate: {
+                    sFirst: "首页",
+                    sPrevious: "上一页",
+                    sNext: "下一页",
+                    sLast: "末页"
+                },
+                oAria: {
+                    sSortAscending: "以升序排列此列",
+                    sSortDescending: "以降序排列此列"
+                }
+            }
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>获客视频</title>
+</head>
+
+<body>
+  <style>
+    html,
+    body {
+      height: 100%;
+      padding: 0;
+      margin: 0;
+    }
+
+    body {
+      background-color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .wrapper .item {
+      visibility: hidden;
+      display: none;
+    }
+
+    .wrapper h2 {
+      font-size: 50px;
+      margin: 0;
+      color: #3a3a3a;
+      text-align: left;
+    }
+
+    .wrapper>div {
+      height: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: flex-end;
+      font-weight: bold;
+      color: orange;
+    }
+
+    .wrapper>div:after {
+      content: "";
+      width: 10px;
+      height: 4px;
+      display: block;
+      background: black;
+      color: orange;
+      margin-bottom: 4px;
+      margin-left: 2px;
+      animation-duration: 350ms;
+      animation-name: fade;
+      animation-direction: alternate;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes fade {
+      from {
+        opacity: 1;
+      }
+
+      to {
+        opacity: 0;
+      }
+    }
+  </style>
+  <div class="wrapper">
+
+    <div data-text></div>
+    <span class="item">HuoKe</span>
+    <span class="item">Video</span>
+    <span class="item">being maintained</span>
+
+    <h2>获客视频</h2>
+
+  </div>
+  <script>
+    let wrapper;
+    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+    async function writingAll(stringTarget, container) {
+      wrapper = document.querySelector('[' + container + ']');
+      const stringsContainer = document.getElementsByClassName(stringTarget);
+
+      while (wrapper) {
+        for (i = 0; i < stringsContainer.length; i++) {
+          const string = stringsContainer[i].textContent;
+          await write(string);
+          await sleep(1000);
+          await erase();
+          await sleep(1000);
+        };
+      }
+    };
+
+    async function write(text) {
+      let index = 0;
+      while (index < text.length) {
+        const timeout = 100;
+        await sleep(timeout);
+        index++;
+        wrapper.innerHTML = text.substring(0, index);
+      }
+    };
+
+
+    async function erase() {
+      while (wrapper.textContent.length) {
+        const timeout = 100;
+        await sleep(timeout);
+        wrapper.textContent = wrapper.textContent.substring(0, wrapper.textContent.length - 2);
+      }
+    };
+
+    writingAll('item', 'data-text');
+  </script>
+</body>
+
+</html>
